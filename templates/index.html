@@ -2,13 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PDFQuery AI</title>
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%233b82f6"/><stop offset="100%" style="stop-color:%237c3aed"/></linearGradient></defs><circle cx="16" cy="16" r="15" fill="url(%23grad)"/><text x="16" y="14" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="8" text-anchor="middle">PDF</text><path d="M16 15 L8 22 L24 22 Z" fill="white"/><circle cx="12" cy="19" r="1.2" fill="white"/><circle cx="16" cy="19" r="1.2" fill="white"/><circle cx="20" cy="19" r="1.2" fill="white"/></svg>'>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --safe-bottom: 0px;
+}
+
+body {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .bg-gradient-text {
         background: linear-gradient(to right, #2563eb, #7c3aed);
         -webkit-background-clip: text;
@@ -27,8 +37,10 @@
         background: linear-gradient(to bottom right, #3b82f6, #7c3aed);
     }
 
+/* Adjusted chat container height to leave more space for input area */
     .chat-container {
-        height: 600px;
+    height: calc(100vh - 340px);
+    min-height: 280px;
     }
 
     @keyframes slideIn {
@@ -55,74 +67,442 @@
         animation: bounce 1s infinite;
     }
 
-    .ai-message-content ul {
-        margin: 1rem 0;
-        list-style: none;
+/* Improved prompt suggestions scrolling */
+.prompt-suggestions-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.prompt-suggestions-container::-webkit-scrollbar {
+    display: none;
+}
+
+.prompt-suggestions {
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0.25rem;
+}
+
+/* Adjusted input container positioning */
+.message-input-container {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    padding: 1rem;
+    border-top: 1px solid #e4e7ec;
+    margin-top: auto;
+}
+
+/* Better spacing for mobile */
+@media (max-width: 640px) {
+    .message-bubble {
+        max-width: 80%;
     }
     
-    .ai-message-content li {
-        position: relative;
-        padding-left: 1.5rem;
-        margin-bottom: 0.5rem;
+    .chat-input {
+        font-size: 16px;
     }
-    
-    .ai-message-content li:before {
-        content: "•";
-        position: absolute;
-        left: 0.25rem;
-        color: #6B7280;
-        display: inline-block;
+
+    .message-input-container {
+        padding: 0.75rem;
+        padding-bottom: calc(1.25rem + var(--safe-bottom));
     }
-    
-    .ai-message-content code {
-        color: #4B5563;
-        background-color: #F3F4F6;
-        padding: 0.125rem 0.375rem;
-        border-radius: 0.25rem;
+
+    .prompt-suggestions-container {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+/* Added bottom padding to ensure content isn't hidden */
+.chat-interface {
+    padding-bottom: calc(4rem + var(--safe-bottom));
+}
+
+/* Dark mode styles */
+:root {
+    color-scheme: light dark;
+}
+
+.dark {
+    color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+.dark body {
+    background: linear-gradient(to bottom right, #1a1b1e, #2d2d35);
+}
+
+.dark .bg-white {
+    background-color: #1a1b1e;
+}
+
+.dark .text-gray-600 {
+    color: #9ca3af;
+}
+
+.dark .text-gray-700 {
+    color: #d1d5db;
+}
+
+.dark .text-gray-800 {
+    color: #e5e7eb;
+}
+
+.dark .bg-gray-50 {
+    background-color: #2d2d35;
+}
+
+.dark .border-gray-200 {
+    border-color: #374151;
+}
+
+.dark .shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.dark .prompt-suggestion {
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(124, 58, 237, 0.1));
+}
+
+.dark .prompt-suggestion:hover {
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+}
+
+.dark .chat-input {
+    background-color: #2d2d35;
+    color: #e5e7eb;
+}
+
+.dark .chat-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Improved message bubbles for dark mode */
+.dark .message-bubble {
+    background-color: #2d2d35;
+    border: 1px solid #374151;
+}
+
+.dark code {
+    background-color: #374151;
+    color: #e5e7eb;
+}
+
+/* Animation for theme toggle */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.theme-toggle-rotate {
+    animation: rotate 0.5s ease-in-out;
+}
+
+/* Additional dark mode styles */
+.dark .prompt-suggestions-container {
+    background-color: #1a1b1e;
+    border-color: #374151;
+}
+
+.dark .message-input-container {
+    background-color: #1a1b1e;
+    border-color: #374151;
+}
+
+.dark .chat-input {
+    background-color: #2d2d35;
+}
+
+.dark .chat-input:focus {
+    ring-color: #6366f1;
+}
+
+.dark .contact-link {
+    background-color: #2d2d35;
+    color: #60a5fa;
+}
+
+.dark .contact-link:hover {
+    background-color: #374151;
+    color: #ef4444;
+}
+
+/* Dark mode styles for markdown content */
+.dark .ai-message-content h3 {
+    color: #e5e7eb;
+}
+
+.dark .ai-message-content h4 {
+    color: #d1d5db;
+}
+
+.dark .ai-message-content h5 {
+    color: #9ca3af;
+}
+
+.dark .ai-message-content p {
+    color: #9ca3af;
+}
+
+.dark .ai-message-content ul {
+    color: #9ca3af;
+}
+
+.dark .ai-message-content strong {
+    color: #e5e7eb;
+}
+
+.dark .ai-message-content code {
+    background-color: #374151;
+    color: #e5e7eb;
+}
+
+/* Dark mode for typing indicator */
+.dark #typing-indicator {
+    color: #9ca3af;
+}
+
+.dark #typing-indicator .typing-dot {
+    background-color: #6b7280;
+}
+
+/* Dark mode for PDF status */
+.dark #pdf-status.text-green-500 {
+    color: #34d399;
+}
+
+.dark #pdf-status.text-red-500 {
+    color: #f87171;
+}
+
+/* New theme toggle styles */
+.theme-toggle-wrapper {
+    position: fixed;
+    top: 2rem;
+    right: 32.8125rem;
+    transform: scale(0.18);
+    z-index: 50;
+    transform-origin: right top;
+    display: block;
+}
+
+/* Mobile toggle styles */
+@media (max-width: 640px) {
+    .theme-toggle-wrapper {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        transform: scale(0.17);
+        display: block !important;
+    }
+}
+
+/* Header styles - consistent across all devices */
+.header-logo-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+}
+
+.logo-container {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+}
+
+.site-title {
+    font-size: 2rem;
+    line-height: 2.25rem;
+    font-weight: bold;
+}
+
+.subtitle {
+    margin-left: 0.5rem;
+    text-align: left;
         font-size: 0.875rem;
-        font-family: ui-monospace, monospace;
+}
+
+/* Chat container height */
+.chat-container {
+    height: calc(100vh - 340px);
+    min-height: 280px;
+}
+
+/* Message input container */
+.message-input-container {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    padding: 1rem;
+    border-top: 1px solid #e4e7ec;
+    margin-top: auto;
+}
+
+/* Prompt suggestions container */
+.prompt-suggestions-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.prompt-suggestions {
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0.25rem;
+}
+
+/* Message bubbles */
+.message-bubble {
+    max-width: 80%;
+}
+
+/* Toggle button styles */
+.toggle-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.toggle-slot {
+    position: relative;
+    height: 10em;
+    width: 20em;
+    border: 5px solid #e4e7ec;
+    border-radius: 10em;
+    background-color: white;
+    transition: background-color 250ms;
+    cursor: pointer;
+}
+
+.toggle-checkbox:checked ~ .toggle-slot {
+    background-color: #374151;
+}
+
+.toggle-button {
+    transform: translate(11.75em, 1.75em);
+    position: absolute;
+    height: 6.5em;
+    width: 6.5em;
+    border-radius: 50%;
+    background-color: #ffeccf;
+    box-shadow: inset 0px 0px 0px 0.75em #ffbb52;
+    transition: background-color 250ms, border-color 250ms, transform 500ms cubic-bezier(.26,2,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .toggle-button {
+    background-color: #485367;
+    box-shadow: inset 0px 0px 0px 0.75em white;
+    transform: translate(1.75em, 1.75em);
+}
+
+.sun-icon {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    color: #ffbb52;
+}
+
+.sun-icon-wrapper {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    opacity: 1;
+    transform: translate(2em, 2em) rotate(15deg);
+    transform-origin: 50% 50%;
+    transition: opacity 150ms, transform 500ms cubic-bezier(.26,2,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .sun-icon-wrapper {
+    opacity: 0;
+    transform: translate(3em, 2em) rotate(0deg);
+}
+
+.moon-icon {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    color: white;
+}
+
+.moon-icon-wrapper {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    opacity: 0;
+    transform: translate(11em, 2em) rotate(0deg);
+    transform-origin: 50% 50%;
+    transition: opacity 150ms, transform 500ms cubic-bezier(.26,2.5,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .moon-icon-wrapper {
+    opacity: 1;
+    transform: translate(12em, 2em) rotate(-15deg);
     }
 </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-<div class="max-w-4xl mx-auto">
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+<div class="theme-toggle-wrapper">
+    <label>
+        <input class='toggle-checkbox' type='checkbox' id="theme-toggle-desktop"></input>
+        <div class='toggle-slot'>
+            <div class='sun-icon-wrapper'>
+                <div class="iconify sun-icon" data-icon="feather-sun" data-inline="false"></div>
+            </div>
+            <div class='toggle-button'></div>
+            <div class='moon-icon-wrapper'>
+                <div class="iconify moon-icon" data-icon="feather-moon" data-inline="false"></div>
+            </div>
+        </div>
+    </label>
+</div>
+<div class="max-w-4xl mx-auto px-4 py-4">
 <!-- Header -->
-<div class="text-center mb-8">
-<div class="flex items-center justify-center gap-3">
-<div class="w-12 h-12">
+    <div class="text-center mb-6 header-container">
+        <div class="flex flex-col items-start justify-center gap-2">
+            <div class="header-logo-title w-full">
+                <div class="logo-container">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Background -->
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#3b82f6" />
       <stop offset="100%" style="stop-color:#7c3aed" />
     </linearGradient>
   </defs>
-  
-  <!-- Main circle -->
   <circle cx="16" cy="16" r="15" fill="url(#grad)" />
-  
-  <!-- PDF text -->
   <text x="16" y="14" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="8" text-anchor="middle">PDF</text>
-  
-  <!-- AI chat bubble -->
   <path d="M16 15 L8 22 L24 22 Z" fill="white" />
-  
-  <!-- AI dots -->
   <circle cx="12" cy="19" r="1.2" fill="white" />
   <circle cx="16" cy="19" r="1.2" fill="white" />
   <circle cx="20" cy="19" r="1.2" fill="white" />
 </svg>
 </div>
-<h1 class="text-4xl font-bold bg-gradient-text">PDFQuery AI</h1>
+                <h1 class="site-title font-bold bg-gradient-text">PDFQuery AI</h1>
+            </div>
+            <p class="text-gray-600 text-sm subtitle">Your intelligent PDF companion</p>
 </div>
-<p class="text-gray-600 mt-2">Your intelligent PDF conversation companion</p>
 </div>
+
 <!-- PDF Upload -->
-    <div class="text-center mb-8">
+    <div class="text-center mb-6">
         <form id="pdf-upload-form" class="inline-block">
             <input type="file" name="file" accept=".pdf" class="hidden" id="pdf-input">
-            <label for="pdf-input" class="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-button text-white cursor-pointer hover:shadow-xl transition-all shadow-lg">
+            <label for="pdf-input" class="inline-flex items-center px-6 py-3 rounded-xl bg-gradient-button text-white cursor-pointer active:scale-95 transition-transform touch-manipulation">
                 <i class="fas fa-upload mr-2"></i>
                 Upload PDF
             </label>
@@ -132,35 +512,10 @@
     </div>
 
     <!-- Chat Interface -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
+    <div class="bg-white rounded-2xl shadow-xl chat-interface">
         <!-- Messages Container -->
-        <div class="chat-container overflow-y-auto mb-6 pr-4" id="chat-messages">
-            <div class="flex justify-start mb-6 animate-slideIn">
-                <div class="flex items-start w-full">
-                    <div class="h-8 w-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                            <defs>
-                                <linearGradient id="grad-avatar" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#3b82f6" />
-                                    <stop offset="100%" style="stop-color:#7c3aed" />
-                                </linearGradient>
-                            </defs>
-                            <circle cx="16" cy="16" r="15" fill="url(#grad-avatar)" />
-                            <text x="16" y="14" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="8" text-anchor="middle">PDF</text>
-                            <path d="M16 15 L8 22 L24 22 Z" fill="white" />
-                            <circle cx="12" cy="19" r="1.2" fill="white" />
-                            <circle cx="16" cy="19" r="1.2" fill="white" />
-                            <circle cx="20" cy="19" r="1.2" fill="white" />
-                        </svg>
-                    </div>
-                    <div class="max-w-[80%] rounded-2xl px-4 py-3 bg-white shadow-md flex-grow">
-                        <div class="text-sm font-medium mb-1">PDFQuery AI</div>
-                        <div class="text-sm text-gray-700">
-                            Welcome to PDFQuery AI! Upload a PDF and I'll help you analyze and understand its content.
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="chat-container-fixed overflow-y-auto" id="chat-messages">
+            <!-- Messages will be inserted here -->
         </div>
 
         <!-- Typing Indicator -->
@@ -173,46 +528,46 @@
             <span>AI is thinking...</span>
         </div>
 
-        <!-- Input Form -->
-        <div class="mb-4">
-            <div class="text-sm text-gray-600 mb-2">Suggested prompts:</div>
-            <div class="flex flex-wrap gap-2">
-                <button class="prompt-suggestion px-3 py-1.5 text-sm bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-gray-700 rounded-lg border border-gray-200 transition-all">
-                    Write a detailed summary
+        <!-- Prompt Suggestions - Moved up -->
+        <div class="prompt-suggestions-container dark:bg-gray-800 dark:border-gray-700">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-2 px-2">Suggested prompts:</div>
+            <div class="prompt-suggestions">
+                <button class="prompt-suggestion whitespace-nowrap px-3 py-2 text-sm bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 active:from-blue-200 active:to-purple-200 dark:active:from-blue-900/40 dark:active:to-purple-900/40 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 transition-all touch-manipulation">
+                    Write a summary
                 </button>
-                <button class="prompt-suggestion px-3 py-1.5 text-sm bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-gray-700 rounded-lg border border-gray-200 transition-all">
+                <button class="prompt-suggestion whitespace-nowrap px-3 py-2 text-sm bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 active:from-blue-200 active:to-purple-200 dark:active:from-blue-900/40 dark:active:to-purple-900/40 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 transition-all touch-manipulation">
                     Extract key points
                 </button>
-                <button class="prompt-suggestion px-3 py-1.5 text-sm bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-gray-700 rounded-lg border border-gray-200 transition-all">
+                <button class="prompt-suggestion whitespace-nowrap px-3 py-2 text-sm bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 active:from-blue-200 active:to-purple-200 dark:active:from-blue-900/40 dark:active:to-purple-900/40 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 transition-all touch-manipulation">
                     List main topics
                 </button>
-                <button class="prompt-suggestion px-3 py-1.5 text-sm bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-gray-700 rounded-lg border border-gray-200 transition-all">
-                    Explain technical terms
-                </button>
-                <button class="prompt-suggestion px-3 py-1.5 text-sm bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-gray-700 rounded-lg border border-gray-200 transition-all">
+                <button class="prompt-suggestion whitespace-nowrap px-3 py-2 text-sm bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30 active:from-blue-200 active:to-purple-200 dark:active:from-blue-900/40 dark:active:to-purple-900/40 text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 transition-all touch-manipulation">
                     Find conclusions
                 </button>
             </div>
         </div>
-        <form id="chat-form" class="flex items-center bg-gray-50 rounded-xl p-2">
+
+        <!-- Input Form - Adjusted spacing -->
+        <div class="message-input-container relative">
+            <form id="chat-form" class="flex items-center gap-2">
             <input type="text" 
                 id="chat-input" 
-                placeholder="Ask about the PDF content..."
-                class="flex-1 px-4 py-3 bg-transparent focus:outline-none text-gray-700 placeholder-gray-500"
+                    class="chat-input flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400"
+                    placeholder="Ask about the PDF..."
                 autocomplete="off"
             >
             <button type="submit" 
-                class="ml-2 px-6 py-3 bg-gradient-button text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all flex items-center"
+                    class="px-4 py-3 bg-gradient-button text-white rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center touch-manipulation"
             >
-                <span>Send</span>
-                <i class="fas fa-paper-plane ml-2"></i>
+                    <i class="fas fa-paper-plane"></i>
             </button>
         </form>
+        </div>
     </div>
 </div>
 
 <!-- Contact Link -->
-<div class="mt-8 text-center mb-4">
+<div class="mt-6 text-center pb-6">
     <a
         href="https://t.me/PS_Hacker"
         target="_blank"
@@ -221,20 +576,27 @@
             inline-block
             text-xs
             text-blue-700
-            px-2 py-1
+            dark:text-blue-400
+            px-3 py-2
             bg-gray-50 
+            dark:bg-gray-800
             rounded-md
             transition-colors 
             duration-300
             hover:text-red-700
+            dark:hover:text-red-400
             hover:bg-gray-200
+            dark:hover:bg-gray-700
+            active:bg-gray-300
+            dark:active:bg-gray-600
             focus:outline-none
             focus:ring-2
             focus:ring-offset-2
+            dark:focus:ring-offset-gray-900
             focus:ring-blue-700
+            dark:focus:ring-blue-500
+            touch-manipulation
         "
-        title="Contact P.S. Hackerz via Telegram"
-        aria-label="Contact P.S. Hackerz via Telegram"
     >
         Made By @ P.S. Hackerz (Contact us)
     </a>
@@ -253,11 +615,11 @@
         if (isUser) {
             messageDiv.innerHTML = `
                 <div class="flex items-start">
-                    <div class="max-w-[80%] rounded-2xl px-4 py-3 bg-gradient-button text-white">
+                <div class="max-w-[80%] rounded-2xl px-4 py-3 bg-gradient-button text-white dark:opacity-90">
                         <div class="text-sm font-medium mb-1">You</div>
                         <div class="text-sm">${message}</div>
                     </div>
-                    <div class="h-8 w-8 rounded-full bg-gradient-button flex items-center justify-center ml-3">
+                <div class="h-8 w-8 rounded-full bg-gradient-button dark:opacity-90 flex items-center justify-center ml-3">
                         <i class="fas fa-user text-white text-sm"></i>
                     </div>
                 </div>
@@ -281,9 +643,9 @@
                             <circle cx="20" cy="19" r="1.2" fill="white" />
                         </svg>
                     </div>
-                    <div class="max-w-[80%] rounded-2xl px-6 py-4 bg-white shadow-md flex-grow">
-                        <div class="text-sm font-medium mb-2 text-gray-800">PDFQuery AI</div>
-                        <div class="ai-message-content">${formattedMessage}</div>
+                <div class="max-w-[80%] rounded-2xl px-6 py-4 bg-white dark:bg-gray-800 shadow-md flex-grow">
+                    <div class="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">PDFQuery AI</div>
+                    <div class="ai-message-content dark:text-gray-300">${formattedMessage}</div>
                     </div>
                 </div>
             `;
@@ -513,6 +875,58 @@
             chatInput.value = button.textContent.trim();
             chatInput.focus();
         });
+    });
+
+// Update the toggleTheme function
+function toggleTheme() {
+    const checkboxes = document.querySelectorAll('.toggle-checkbox');
+    
+    if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+    }
+}
+
+// Update the initialization
+function initializeTheme() {
+    const isDark = localStorage.theme === 'dark' || 
+                  (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const checkboxes = document.querySelectorAll('.toggle-checkbox');
+    
+    if (isDark) {
+        document.documentElement.classList.add('dark');
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+    } else {
+        document.documentElement.classList.remove('dark');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+    }
+}
+
+// Initialize theme
+initializeTheme();
+
+// Update event listeners for both toggles
+document.querySelectorAll('.toggle-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', toggleTheme);
+});
+
+// Keep the system theme change listener
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.theme) {
+        const checkboxes = document.querySelectorAll('.toggle-checkbox');
+        if (e.matches) {
+            document.documentElement.classList.add('dark');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+    }
     });
 </script>
 </body>

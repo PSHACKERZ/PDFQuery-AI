@@ -2,6 +2,14 @@
 
 PDFQuery AI is an intelligent PDF conversation companion that allows users to upload PDF documents and interact with their content through a natural language interface, powered by Google's Gemini AI.
 
+---
+
+### WEB LINK -
+
+- [SEE NOW](https://pdfquery-ai.onrender.com)
+
+---
+
 ## Features
 
 * 📄 PDF Upload & Processing (up to 16MB)
@@ -35,8 +43,8 @@ PDFQuery AI is an intelligent PDF conversation companion that allows users to up
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
-cd pdfquery-ai
+git clone https://github.com/PSHACKERZ/PDFQuery-AI.git 
+cd PDFQuery-AI
 ```
 
 2. Install the required dependencies:

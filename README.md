@@ -2,13 +2,38 @@
 
 PDFQuery AI is an intelligent PDF conversation companion that allows users to upload PDF documents and interact with their content through a natural language interface, powered by Google's Gemini AI.
 
----
-
-### WEB LINK -
-
-- [SEE NOW](https://pdfquery-ai.onrender.com)
+![PDFQuery AI Screenshot](https://i.postimg.cc/zv2JmgqJ/icon.png)
 
 ---
+
+
+
+[![Play Now](https://img.shields.io/badge/Play%20Now-Live%20Demo-blue)](https://pdfquery-ai.onrender.com)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Render Status](https://img.shields.io/badge/render-deployed-brightgreen)](https://pdfquery-ai.onrender.com)
+
+
+
+
+### Download the App
+
+<a href="https://www.amazon.com/dp/B0DV3L885L/">
+    <img src="https://static.itch.io/images/store_badges/amazon.png" 
+         srcset="https://static.itch.io/images/store_badges/amazon.png 1x, https://static.itch.io/images/store_badges/amazon@2x.png 2x">
+</a>
+
+---
+
+### ScreenShots of App
+<details>
+  <summary>Click to view Screenshots</summary>
+  <img src="https://i.postimg.cc/bJWZbW20/1.png" width="500">
+  <img src="https://i.postimg.cc/QxpF96N5/2.png" width="500">
+  <img src="https://i.postimg.cc/dtM70MFw/3.png" width="500">
+  <img src="https://i.postimg.cc/cL0rQQ6z/4.png" width="500">
+  <img src="https://i.postimg.cc/BZPLsSdm/5.png" width="500">
+</details>
+
 
 ## Features
 

@@ -138,7 +138,7 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## Contact
 
-For support or queries, contact us on Telegram: [@PS_Hacker](https://t.me/PS_Hacker)
+For support or queries, contact us on Telegram: [@PS_Hackerz](https://t.me/pshackerzofficial)
 
 ## License
 
